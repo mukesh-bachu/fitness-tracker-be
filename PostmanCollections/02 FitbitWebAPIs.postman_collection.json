@@ -1,0 +1,4028 @@
+{
+	"info": {
+		"_postman_id": "a5d6551a-1301-49ff-b06a-6cbc9e1bbf58",
+		"name": "02 FitbitWebAPIs",
+		"description": "This is a postman collection of Fitbit Web APIs to access data from Fitbit activity trackers, Aria scale and manualluy entered logs.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24527826"
+	},
+	"item": [
+		{
+			"name": "01 User Auth Details",
+			"item": [
+				{
+					"name": "01 GET authcode for fitbit token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/initiate-fitbit-oauth",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"initiate-fitbit-oauth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02 Get authToken for fitbit APIs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData && jsonData.access_token) {",
+									"    pm.environment.set(\"authTokeF\", jsonData.access_token);",
+									"}",
+									"if (jsonData && jsonData.refresh_token) {",
+									"    pm.environment.set(\"refresh-token\", jsonData.refresh_token);",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/fitbit?code=e679b48d903a2804fd877392f14ba1a7482a0dc0&state=eBG1i~VCghhMFkVi#_=_",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"fitbit"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "e679b48d903a2804fd877392f14ba1a7482a0dc0"
+								},
+								{
+									"key": "state",
+									"value": "eBG1i~VCghhMFkVi"
+								}
+							],
+							"hash": "_=_"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "03 Get Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData && jsonData.access_token) {",
+									"    pm.environment.set(\"authTokeF\", jsonData.access_token);",
+									"}",
+									"if (jsonData && jsonData.refresh_token) {",
+									"    pm.environment.set(\"refresh-token\", jsonData.refresh_token);",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{referesh-auth}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "refresh_token",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{clientId}}",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "{{refresh-token}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api.fitbit.com/oauth2/token",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Contains API end points to get access code and auth tokens to valdiate the other requests that are sent to fitbit web APIs."
+		},
+		{
+			"name": "02 User Profile Details",
+			"item": [
+				{
+					"name": "01 GET User Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authTokeF}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1/user/-/profile.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1",
+								"user",
+								"-",
+								"profile.json"
+							]
+						},
+						"description": "Returns a user's profile. The authenticated owner receives all values. However, the authenticated user's access to other users' data is subject to those users' privacy settings. Numerical values are returned in the unit system specified in the Accept-Language header."
+					},
+					"response": []
+				},
+				{
+					"name": "02 Get Badges",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1/user/-/badges.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1",
+								"user",
+								"-",
+								"badges.json"
+							]
+						},
+						"description": "Retrieves the user's badges in the format requested. Response includes all badges for the user as seen on the Fitbit website badge locker (both activity and weight related.) The endpoint returns weight and distance badges based on the user's unit profile preference as on the website."
+					},
+					"response": []
+				},
+				{
+					"name": "03 POST Update Profile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "aboutMe",
+									"value": "hi",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api.fitbit.com/1/user/-/profile.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1",
+								"user",
+								"-",
+								"profile.json"
+							]
+						},
+						"description": "Updates a user's profile using a form."
+					},
+					"response": []
+				}
+			],
+			"description": "The User endpoints display information about the user's profile information, the regional locale & language settings, and their badges collected"
+		},
+		{
+			"name": "03 Activity Zone Minutes (AZM) Details",
+			"item": [
+				{
+					"name": "01 Intraday",
+					"item": [
+						{
+							"name": "01 Get AZM Intraday by Date",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/active-zone-minutes/date/{{currentDate}}/1d/1min.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"active-zone-minutes",
+										"date",
+										"{{currentDate}}",
+										"1d",
+										"1min.json"
+									]
+								},
+								"description": "Returns the active zone minutes intraday data for a 24 hour period by specifying a date and/or time range."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get AZM Intraday by Date T",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/active-zone-minutes/date/{{currentDate}}/1d/1min/time/00%3A00/23%3A59.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"active-zone-minutes",
+										"date",
+										"{{currentDate}}",
+										"1d",
+										"1min",
+										"time",
+										"00%3A00",
+										"23%3A59.json"
+									]
+								},
+								"description": "Returns the active zone minutes intraday data for a 24 hour period by specifying a date and/or time range."
+							},
+							"response": []
+						},
+						{
+							"name": "03 Get AZM Intraday by Interval",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/active-zone-minutes/date/{{startDate}}/{{endDate}}/1min.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"active-zone-minutes",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}",
+										"1min.json"
+									]
+								},
+								"description": "Returns the active zone minutes intraday data for a 24 hour period by specifying a date range and/or time range."
+							},
+							"response": []
+						},
+						{
+							"name": "04 Get AZM Intraday by Interval T",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/active-zone-minutes/date/{{startDate}}/{{endDate}}/time/00%3A00/23%3A59.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"active-zone-minutes",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}",
+										"time",
+										"00%3A00",
+										"23%3A59.json"
+									]
+								},
+								"description": "Returns the active zone minutes intraday data for a 24 hour period by specifying a date range and/or time range."
+							},
+							"response": []
+						}
+					],
+					"description": "The Active Zone Minutes (AZM) Intraday Time Series endpoints retrieve the user's heart-pumping activity for a specific date or 24 hour period. Intraday support can extend the detail-level response to include 1min, 5min and 15min for Active Zone Minutes."
+				},
+				{
+					"name": "02 Time Series",
+					"item": [
+						{
+							"name": "01 Get AZM Time Series by Date",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/active-zone-minutes/date/{{currentDate}}/1d.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"active-zone-minutes",
+										"date",
+										"{{currentDate}}",
+										"1d.json"
+									]
+								},
+								"description": "Returns the daily summary values over a period of time by specifying a date and time period."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get AZM Time Series by Interval",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/active-zone-minutes/date/{{startDate}}/{{endDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"active-zone-minutes",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}.json"
+									]
+								},
+								"description": "Returns the daily summary values over an interval by specifying a date range."
+							},
+							"response": []
+						}
+					],
+					"description": "The Active Zone Minutes (AZM) Intraday Time Series endpoints retrieve the user's heart-pumping activity for a specific date or 24 hour period. Intraday support can extend the detail-level response to include 1min, 5min and 15min for Active Zone Minutes."
+				}
+			],
+			"description": "The Active Zone Minutes (AZM) Time Series endpoints are used for querying the user's heart-pumping activity throughout the day."
+		},
+		{
+			"name": "04 Cardio Fitness Score (VO2 max)",
+			"item": [
+				{
+					"name": "01 Get VO2 Max Summary by Date",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1/user/-/cardioscore/date/{{currentDate}}.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1",
+								"user",
+								"-",
+								"cardioscore",
+								"date",
+								"{{currentDate}}.json"
+							]
+						},
+						"description": "This endpoint returns the Cardio Fitness Score (VO2 Max) data for a single date. VO2 Max values will be shown as a range if no run data is available or a single numeric value if the user uses a GPS for runs."
+					},
+					"response": []
+				},
+				{
+					"name": "02 Get VO2 Max Summary by Interval",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1/user/-/cardioscore/date/2024-01-15/2024-01-16.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1",
+								"user",
+								"-",
+								"cardioscore",
+								"date",
+								"2024-01-15",
+								"2024-01-16.json"
+							]
+						},
+						"description": "This endpoint returns the Cardio Fitness Score (VO2 Max) data for a date range. VO2 Max values will be shown as a range if no run data is available or a single numeric value if the user uses a GPS for runs."
+					},
+					"response": []
+				}
+			],
+			"description": "The Cardio Fitness Score (also known as VO2 Max) endpoints are used for querying the maximum or optimum rate at which the user’s heart, lungs, and muscles can effectively use oxygen during exercise."
+		},
+		{
+			"name": "05 BreathingRate",
+			"item": [
+				{
+					"name": "01 Intraday",
+					"item": [
+						{
+							"name": "01 Get Breathing Rate Intraday by Date",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/br/date/{{currentDate}}/all.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"br",
+										"date",
+										"{{currentDate}}",
+										"all.json"
+									]
+								},
+								"description": "This endpoint returns intraday breathing rate data for a single date. It measures the average breathing rate throughout the day and categories your breathing rate by sleep stage. Sleep stages vary between light sleep, deep sleep, REM sleep, and full sleep."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get Breathing Rate Intraday by Interval",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/br/date/{{startDate}}/{{endDate}}/all.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"br",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}",
+										"all.json"
+									]
+								},
+								"description": "This endpoint returns intraday breathing rate data for a date range. It measures the average breathing rate throughout the day and categories your breathing rate by sleep stage. Sleep stages vary between light sleep, deep sleep, REM sleep, and full sleep."
+							},
+							"response": []
+						}
+					],
+					"description": "The Breathing Rate Intraday endpoint returns the average breathing rate throughout the day and categories your breathing rate by sleep stage."
+				},
+				{
+					"name": "Time Series",
+					"item": [
+						{
+							"name": "01 Get Breathing Rate Summary by Date",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/br/date/{{currentDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"br",
+										"date",
+										"{{currentDate}}.json"
+									]
+								},
+								"description": "This endpoint returns average breathing rate data for a single date. Breathing Rate data applies specifically to a user’s “main sleep,” which is the longest single period of time during which they were asleep on a given date."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get Breathing Rate Summary by Interval",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/br/date/{{startDate}}/{{endDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"br",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}.json"
+									]
+								},
+								"description": "This endpoint returns average breathing rate data for a date range. Breathing Rate data applies specifically to a user’s “main sleep,” which is the longest single period of time during which they were asleep on a given date."
+							},
+							"response": []
+						}
+					],
+					"description": "The Body Time Series endpoints are used for querying body fat and weight data over a period of time either by specifying a date and time period, or a date range."
+				}
+			],
+			"description": "Breathing Rate or Respiratory Rate is a measurement of your average breaths per minute at night."
+		},
+		{
+			"name": "06 Electrodiagram",
+			"item": [
+				{
+					"name": "01 Get ECG Log List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1/user/-/ecg/list.json?beforeDate={{currentDate}}&sort=asc&offset=0&limit=10",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1",
+								"user",
+								"-",
+								"ecg",
+								"list.json"
+							],
+							"query": [
+								{
+									"key": "beforeDate",
+									"value": "{{currentDate}}"
+								},
+								{
+									"key": "sort",
+									"value": "asc"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "This endpoint is used for querying the user's on-device ECG readings."
+					},
+					"response": []
+				}
+			],
+			"description": "The Electrocardiogram (also known as ECG) endpoint is used for querying the user's on-device ECG readings."
+		},
+		{
+			"name": "07 Temperature",
+			"item": [
+				{
+					"name": "01 Core Temperature",
+					"item": [
+						{
+							"name": "01 Get Temperature (Core) Summary by Date",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var moment = require('moment');",
+											"",
+											"pm.environment.set('currentDate', moment().format((\"YYYY-MM-DD\")));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/temp/core/date/{{currentDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"temp",
+										"core",
+										"date",
+										"{{currentDate}}.json"
+									]
+								},
+								"description": "Returns the Temperature (Core) data for a single date. Temperature (Core) data applies specifically to data logged manually by the user throughout the day."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get Temperature (Core) Summary by Interval",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/temp/core/date/{{startDate}}/{{endDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"temp",
+										"core",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}.json"
+									]
+								},
+								"description": "Returns Temperature (Core) data for a date range. Temperature (Core) data applies specifically to data logged manually by the user throughout the day and the maximum date range cannot exceed 30 days."
+							},
+							"response": []
+						}
+					],
+					"description": "The Temperature endpoints are used for querying the core temperature data logged manually by the user while the user is asleep."
+				},
+				{
+					"name": "02 Skin Temperature",
+					"item": [
+						{
+							"name": "01 Get Temperature (Skin) Summary by Date",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/temp/skin/date/{{currentDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"temp",
+										"skin",
+										"date",
+										"{{currentDate}}.json"
+									]
+								},
+								"description": "Returns the Temperature (Skin) data for a single date. Temperature (Skin) data applies specifically to a user’s “main sleep”, which is the longest single period of time asleep on a given date."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get Temperature (Skin) Summary by Interval",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/temp/skin/date/{{startDate}}/{{endDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"temp",
+										"skin",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}.json"
+									]
+								},
+								"description": "Returns Temperature (Skin) data for a date range. It only returns a value for dates on which the Fitbit device was able to record Temperature (skin) data and the maximum date range cannot exceed 30 days."
+							},
+							"response": []
+						}
+					],
+					"description": "The Temperature endpoints are used for querying the skin temperature recorded by the device while the user is asleep."
+				}
+			],
+			"description": "The Temperature endpoints are used for querying either the core temperature data logged manually by the user, or the skin temperature recorded by the device while the user is asleep."
+		},
+		{
+			"name": "08 SPO2",
+			"item": [
+				{
+					"name": "01 Intraday",
+					"item": [
+						{
+							"name": "01 Get SpO2 Intraday by Date",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/spo2/date/{{currentDate}}/all.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"spo2",
+										"date",
+										"{{currentDate}}",
+										"all.json"
+									]
+								},
+								"description": "This endpoint returns the SpO2 intraday data for a single date. SpO2 applies specifically to a user’s “main sleep”, which is the longest single period of time asleep on a given date."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get SpO2 Intraday by Interval",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/spo2/date/{{startDate}}/{{endDate}}/all.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"spo2",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}",
+										"all.json"
+									]
+								},
+								"description": "This endpoint returns the SpO2 intraday data for a specified date range. SpO2 applies specifically to a user’s “main sleep”, which is the longest single period of time asleep on a given date."
+							},
+							"response": []
+						}
+					],
+					"description": "The SpO2 Intraday endpoints return the SpO2 values calculated on a 5-minute exponentially-moving average."
+				},
+				{
+					"name": "02 Time Series",
+					"item": [
+						{
+							"name": "01 Get SpO2 Summary by Date",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/spo2/date/{{currentDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"spo2",
+										"date",
+										"{{currentDate}}.json"
+									]
+								},
+								"description": "This endpoint returns the SpO2 summary data for a single date. SpO2 applies specifically to a user’s “main sleep”, which is the longest single period of time asleep on a given date."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get SpO2 Summary by Interval",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/spo2/date/{{startDate}}/{{endDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"spo2",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}.json"
+									]
+								},
+								"description": "This endpoint returns the SpO2 summary data for a date range. SpO2 applies specifically to a user’s “main sleep”, which is the longest single period of time asleep on a given date."
+							},
+							"response": []
+						}
+					],
+					"description": "SpO2 (Oxygen Saturation) is a measurement of your blood oxygen level."
+				}
+			],
+			"description": "SpO2 (Oxygen Saturation) is a measurement of your blood oxygen level."
+		},
+		{
+			"name": "09 Sleep",
+			"item": [
+				{
+					"name": "01 Get Sleep Log",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1.2/user/-/sleep/date/{{currentDate}}.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1.2",
+								"user",
+								"-",
+								"sleep",
+								"date",
+								"{{currentDate}}.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02 Get Sleep Logs by Date Range",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1.2/user/-/sleep/date/{{startDate}}/{{endDate}}.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1.2",
+								"user",
+								"-",
+								"sleep",
+								"date",
+								"{{startDate}}",
+								"{{endDate}}.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "03 Get Sleep Logs List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1.2/user/-/sleep/list.json?beforeDate={{currentDate}}&sort=asc&offset=0&limit=10",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1.2",
+								"user",
+								"-",
+								"sleep",
+								"list.json"
+							],
+							"query": [
+								{
+									"key": "beforeDate",
+									"value": "{{currentDate}}"
+								},
+								{
+									"key": "sort",
+									"value": "asc"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "04 Get Sleep Goal",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1.2/user/-/sleep/goal.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1.2",
+								"user",
+								"-",
+								"sleep",
+								"goal.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "05 Update Sleep Goal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1.2/user/-/sleep/goal.json?minDuration={{minDuaration}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1.2",
+								"user",
+								"-",
+								"sleep",
+								"goal.json"
+							],
+							"query": [
+								{
+									"key": "minDuration",
+									"value": "{{minDuaration}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "06 Log Sleep",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1.2/user/-/sleep.json?startTime={{startTime}}&duration={{duration}}&date={{currentDate}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1.2",
+								"user",
+								"-",
+								"sleep.json"
+							],
+							"query": [
+								{
+									"key": "startTime",
+									"value": "{{startTime}}"
+								},
+								{
+									"key": "duration",
+									"value": "{{duration}}"
+								},
+								{
+									"key": "date",
+									"value": "{{currentDate}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "07 Delete Sleep Log",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1.2/user/-/sleep/1.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1.2",
+								"user",
+								"-",
+								"sleep",
+								"1.json"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "10 HeartRate",
+			"item": [
+				{
+					"name": "01 Intraday",
+					"item": [
+						{
+							"name": "01 Get Heart Rate Intraday Time Series",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authTokeF}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/heart/date/{{startDate}}/{{endDate}}/1min.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"heart",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}",
+										"1min.json"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get Heart Rate Intraday Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/heart/date/{{startDate}}/{{endDate}}/{{interval}}/time/{{startTime}}/{{endTime}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"heart",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}",
+										"{{interval}}",
+										"time",
+										"{{startTime}}",
+										"{{endTime}}.json"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "03 Get Heart Rate Intraday Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/heart/date/{{currentDate}}/1d/{{interval}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"heart",
+										"date",
+										"{{currentDate}}",
+										"1d",
+										"{{interval}}.json"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "04 Get Heart Rate Intraday Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/heart/date/{{currentDate}}/1d/{{interval}}/time/{{interval}}/{{endTime}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"heart",
+										"date",
+										"{{currentDate}}",
+										"1d",
+										"{{interval}}",
+										"time",
+										"{{interval}}",
+										"{{endTime}}.json"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "02 Time Series",
+					"item": [
+						{
+							"name": "01 Get Heart Rate Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/heart/date/{{currentDate}}/{{interval1}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"heart",
+										"date",
+										"{{currentDate}}",
+										"{{interval1}}.json"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get Heart Rate Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/heart/date/{{startDate}}/{{endDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"heart",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}.json"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "03 Variability",
+					"item": [
+						{
+							"name": "01 Get HRV Summary by Date",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/hrv/date/2024-01-18.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"hrv",
+										"date",
+										"2024-01-18.json"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get HRV Summary by Interval",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/hrv/date/{{startDate}}/{{endDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"hrv",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}.json"
+									]
+								},
+								"description": "This endpoint returns the Heart Rate Variability (HRV) data for a date range. HRV data applies specifically to a user’s “main sleep,” which is the longest single period of time asleep on a given date."
+							},
+							"response": []
+						}
+					],
+					"description": "The Heart Rate Variability (HRV) endpoints are used for querying the user’s heart rate variability data."
+				},
+				{
+					"name": "04 Variability Intraday",
+					"item": [
+						{
+							"name": "01 Get HRV Intraday by Date",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/hrv/date/{{startDate}}/all.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"hrv",
+										"date",
+										"{{startDate}}",
+										"all.json"
+									]
+								},
+								"description": "This endpoint returns the Heart Rate Variability (HRV) intraday data for a single date. HRV data applies specifically to a user’s “main sleep,” which is the longest single period of time asleep on a given date."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get HRV Intraday by Interval",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/hrv/date/{{startDate}}/{{endDate}}/all.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"hrv",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}",
+										"all.json"
+									]
+								},
+								"description": "This endpoint returns the Heart Rate Variability (HRV) intraday data for given data interval. HRV data applies specifically to a user’s “main sleep,” which is the longest single period of time asleep on a given date."
+							},
+							"response": []
+						}
+					],
+					"description": "The Heart Rate Variability Intraday endpoint returns the HRV rate at various times and returns Root Mean Square of Successive Differences (rmssd), Low Frequency (LF), High Frequency (HF), and Coverage data for a given measurement."
+				}
+			]
+		},
+		{
+			"name": "11 Body",
+			"item": [
+				{
+					"name": "01 Time Series",
+					"item": [
+						{
+							"name": "01 Get Body Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/body/{{bodyParam}}/date/{{startDate}}/{{period}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"body",
+										"{{bodyParam}}",
+										"date",
+										"{{startDate}}",
+										"{{period}}.json"
+									]
+								},
+								"description": "Returns time series data in the specified range for a given resource in the format requested using units in the unit system that corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get Body Time Series for given dates",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/body/{{bodyParam}}/date/{{startDate}}/{{endDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"body",
+										"{{bodyParam}}",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}.json"
+									]
+								},
+								"description": "Returns time series data in the specified range for a given resource in the format requested using units in the unit system that corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						}
+					],
+					"description": "The Body Time Series endpoints are used for querying body fat and weight data over a period of time either by specifying a date and time period, or a date range."
+				},
+				{
+					"name": "02 Body",
+					"item": [
+						{
+							"name": "01 Body Fat",
+							"item": [
+								{
+									"name": "01 Get Body Fat Logs",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "accept",
+												"value": "application/json"
+											},
+											{
+												"key": "authorization",
+												"value": "Bearer {{authTokeF}}"
+											}
+										],
+										"url": {
+											"raw": "https://api.fitbit.com/1/user/-/body/log/fat/date/{{currentDate}}.json",
+											"protocol": "https",
+											"host": [
+												"api",
+												"fitbit",
+												"com"
+											],
+											"path": [
+												"1",
+												"user",
+												"-",
+												"body",
+												"log",
+												"fat",
+												"date",
+												"{{currentDate}}.json"
+											]
+										},
+										"description": "Retreives a list of all user's body fat log entries for a given day in the format requested."
+									},
+									"response": []
+								},
+								{
+									"name": "02 Get Body Fat Logs for the given period",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "accept",
+												"value": "application/json"
+											},
+											{
+												"key": "authorization",
+												"value": "Bearer {{authTokeF}}"
+											}
+										],
+										"url": {
+											"raw": "https://api.fitbit.com/1/user/-/body/log/fat/date/{{startDate}}/{{period}}.json",
+											"protocol": "https",
+											"host": [
+												"api",
+												"fitbit",
+												"com"
+											],
+											"path": [
+												"1",
+												"user",
+												"-",
+												"body",
+												"log",
+												"fat",
+												"date",
+												"{{startDate}}",
+												"{{period}}.json"
+											]
+										},
+										"description": "Retreives a list of all user's body fat log entries for a given day in the format requested."
+									},
+									"response": []
+								},
+								{
+									"name": "03 Get Body Fat Logs by given dates",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "accept",
+												"value": "application/json"
+											},
+											{
+												"key": "authorization",
+												"value": "Bearer {{authTokeF}}"
+											}
+										],
+										"url": {
+											"raw": "https://api.fitbit.com/1/user/-/body/log/fat/date/{{startDate}}/{{endDate}}.json",
+											"protocol": "https",
+											"host": [
+												"api",
+												"fitbit",
+												"com"
+											],
+											"path": [
+												"1",
+												"user",
+												"-",
+												"body",
+												"log",
+												"fat",
+												"date",
+												"{{startDate}}",
+												"{{endDate}}.json"
+											]
+										},
+										"description": "Retreives a list of all user's body fat log entries for a given day in the format requested."
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "02 Weight",
+							"item": [
+								{
+									"name": "01 Get Weight Logs",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "accept",
+												"value": "application/json"
+											},
+											{
+												"key": "authorization",
+												"value": "Bearer {{authTokeF}}"
+											}
+										],
+										"url": {
+											"raw": "https://api.fitbit.com/1/user/-/body/log/weight/date/{{currentDate}}.json",
+											"protocol": "https",
+											"host": [
+												"api",
+												"fitbit",
+												"com"
+											],
+											"path": [
+												"1",
+												"user",
+												"-",
+												"body",
+												"log",
+												"weight",
+												"date",
+												"{{currentDate}}.json"
+											]
+										},
+										"description": "Retreives a list of all user's body weight log entries for a given day using units in the unit systems which corresponds to the Accept-Language header provided."
+									},
+									"response": []
+								},
+								{
+									"name": "02 Get Body Weight Logs",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "accept",
+												"value": "application/json"
+											},
+											{
+												"key": "authorization",
+												"value": "Bearer {{authTokeF}}"
+											}
+										],
+										"url": {
+											"raw": "https://api.fitbit.com/1/user/-/body/log/weight/date/{{currentDate}}/{{period}}.json",
+											"protocol": "https",
+											"host": [
+												"api",
+												"fitbit",
+												"com"
+											],
+											"path": [
+												"1",
+												"user",
+												"-",
+												"body",
+												"log",
+												"weight",
+												"date",
+												"{{currentDate}}",
+												"{{period}}.json"
+											]
+										},
+										"description": "Retreives a list of all user's body weight log entries for a given day in the format requested."
+									},
+									"response": []
+								},
+								{
+									"name": "03 Get Body Weight Logs for gievn dates",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "accept",
+												"value": "application/json"
+											},
+											{
+												"key": "authorization",
+												"value": "Bearer {{authTokeF}}"
+											}
+										],
+										"url": {
+											"raw": "https://api.fitbit.com/1/user/-/body/log/weight/date/{{startDate}}/{{endDate}}.json",
+											"protocol": "https",
+											"host": [
+												"api",
+												"fitbit",
+												"com"
+											],
+											"path": [
+												"1",
+												"user",
+												"-",
+												"body",
+												"log",
+												"weight",
+												"date",
+												"{{startDate}}",
+												"{{endDate}}.json"
+											]
+										},
+										"description": "Retreives a list of all user's body fat log entries for a given day in the format requested."
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "01 Get Body Goals",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/body/log/{{goal}}/goal.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"body",
+										"log",
+										"{{goal}}",
+										"goal.json"
+									]
+								},
+								"description": "Retreives a user's current body fat percentage or weight goal using units in the unit systems that corresponds to the Accept-Language header providedin the format requested."
+							},
+							"response": []
+						}
+					],
+					"description": "The Body endpoints are used for querying and modifying the user's body fat and weight data."
+				}
+			],
+			"description": "The Body endpoints are used for querying and modifying the user's body fat and weight data."
+		},
+		{
+			"name": "12 Activity",
+			"item": [
+				{
+					"name": "01 Intraday",
+					"item": [
+						{
+							"name": "01 Get Activity Intraday Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/{{resource-path}}/date/{{startDate}}/{{endDate}}/{{detail-level}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"{{resource-path}}",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}",
+										"{{detail-level}}.json"
+									]
+								},
+								"description": "Returns the Activity Intraday Time Series for a given resource in the format requested."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get Intraday Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/{{resource-path}}/date/{{currentDate}}/1d/{{detail-level}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"{{resource-path}}",
+										"date",
+										"{{currentDate}}",
+										"1d",
+										"{{detail-level}}.json"
+									]
+								},
+								"description": "Returns the Intraday Time Series for a given resource in the format requested."
+							},
+							"response": []
+						},
+						{
+							"name": "03 Get Activity Intraday Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/{{resource-path}}/date/{{startDate}}/{{endDate}}/{{detail-level}}/time/{{startTime}}/{{endTime}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"{{resource-path}}",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}",
+										"{{detail-level}}",
+										"time",
+										"{{startTime}}",
+										"{{endTime}}.json"
+									]
+								},
+								"description": "Returns the Intraday Time Series for a given resource in the format requested."
+							},
+							"response": []
+						},
+						{
+							"name": "04 Get Intraday Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/{{resource-path}}/date/{{startDate}}/1d/{{detail-level}}/time/{{startTime}}/{{endTime}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"{{resource-path}}",
+										"date",
+										"{{startDate}}",
+										"1d",
+										"{{detail-level}}",
+										"time",
+										"{{startTime}}",
+										"{{endTime}}.json"
+									]
+								},
+								"description": "Returns the Intraday Time Series for a given resource in the format requested."
+							},
+							"response": []
+						}
+					],
+					"description": "The Activity Intraday Time Series endpoints retrieve the data for a given resource on a specific date or 24 hour period. Intraday support can extend the detail-level response to include 1min, 5min and 15min for the activity."
+				},
+				{
+					"name": "02 Time Series",
+					"item": [
+						{
+							"name": "01 Get Activity Resource by Date Range",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/{{resource-path}}/date/{{startDate}}/{{endDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"{{resource-path}}",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}.json"
+									]
+								},
+								"description": "Returns activities time series data in the specified range for a given resource."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get Activity Tracker Resource by Date Range Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/tracker/{{resource-path}}/date/{{startDate}}/{{endDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"tracker",
+										"{{resource-path}}",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}.json"
+									]
+								},
+								"description": "Returns time series data in the specified range for a given resource."
+							},
+							"response": []
+						},
+						{
+							"name": "03 Get Activity Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/{{resource-path}}/date/{{startDate}}/{{period}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"{{resource-path}}",
+										"date",
+										"{{startDate}}",
+										"{{period}}.json"
+									]
+								},
+								"description": "Returns time series data in the specified range for a given resource in the format requested using units in the unit system that corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						},
+						{
+							"name": "04 Get Activity Time Series for given dates",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/tracker/{{resource-path}}/date/{{currentDate}}/{{endDate}}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"tracker",
+										"{{resource-path}}",
+										"date",
+										"{{currentDate}}",
+										"{{endDate}}}.json"
+									]
+								},
+								"description": "Returns time series data in the specified range for a given resource in the format requested using units in the unit system that corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						}
+					],
+					"description": "The Activity Time Series endpoints are used to query a Fitbit user's activity data over a period of time, either by specifying a date and time period, or a date range."
+				},
+				{
+					"name": "03 Activity",
+					"item": [
+						{
+							"name": "01 Get Activity Summary by Date",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/date/{{currentDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"date",
+										"{{currentDate}}.json"
+									]
+								},
+								"description": "Retrieves a summary and list of a user's activities and activity log entries for a given day."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get Lifetime Stats",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities.json"
+									]
+								},
+								"description": "Updates a user's daily activity goals and returns a response using units in the unit system which corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						},
+						{
+							"name": "03 Get Activity Log List",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/list.json?beforeDate={{startDate}}&sort={{sort}}&offset={{offset}}&limit={{limit}}",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"list.json"
+									],
+									"query": [
+										{
+											"key": "beforeDate",
+											"value": "{{startDate}}"
+										},
+										{
+											"key": "sort",
+											"value": "{{sort}}"
+										},
+										{
+											"key": "offset",
+											"value": "{{offset}}"
+										},
+										{
+											"key": "limit",
+											"value": "{{limit}}"
+										}
+									]
+								},
+								"description": "Retreives a list of user's activity log entries before or after a given day with offset and limit using units in the unit system which corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						},
+						{
+							"name": "04 Get Activity TCX",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/{{log-id}}.tcx?includePartialTCX={{boolean}}",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"{{log-id}}.tcx"
+									],
+									"query": [
+										{
+											"key": "includePartialTCX",
+											"value": "{{boolean}}"
+										}
+									]
+								},
+								"description": "Retreives the details of a user's location and heart rate data during a logged exercise activity."
+							},
+							"response": []
+						},
+						{
+							"name": "05 GET Browse Activity Types",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/activities.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"activities.json"
+									]
+								},
+								"description": "Retreives a tree of all valid Fitbit public activities from the activities catelog as well as private custom activities the user created in the format requested."
+							},
+							"response": []
+						},
+						{
+							"name": "06 Get Activity Type",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/activities/{{log-id}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"activities",
+										"{{log-id}}.json"
+									]
+								},
+								"description": "Returns the detail of a specific activity in the Fitbit activities database in the format requested. If activity has levels, it also returns a list of activity level details."
+							},
+							"response": []
+						},
+						{
+							"name": "07 Get Frequent Activities",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/frequent.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"frequent.json"
+									]
+								},
+								"description": "Retreives a list of a user's frequent activities in the format requested using units in the unit system which corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						},
+						{
+							"name": "08 Get Recent Activity Types",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/recent.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"recent.json"
+									]
+								},
+								"description": "Retreives a list of a user's recent activities types logged with some details of the last activity log of that type using units in the unit system which corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						},
+						{
+							"name": "09 Get Favorite Activities",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/favorite.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"favorite.json"
+									]
+								},
+								"description": "Returns a list of a user's favorite activities."
+							},
+							"response": []
+						},
+						{
+							"name": "10 Get Activity Goals",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/goals/daily.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"goals",
+										"daily.json"
+									]
+								},
+								"description": "Retreives a user's current daily or weekly activity goals using measurement units as defined in the unit system, which corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						},
+						{
+							"name": "11 POST Log Activity",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();",
+											"if (jsonData && jsonData.logId) {",
+											"    pm.globals.set(\"activity-log-id\", jsonData.logId);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities.json?activityId={{activityId}}&manualCalories=100&startTime={{startTime}}&durationMillis=1000&date={{currentDate}}&distance=1000",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities.json"
+									],
+									"query": [
+										{
+											"key": "activityId",
+											"value": "{{activityId}}"
+										},
+										{
+											"key": "manualCalories",
+											"value": "100"
+										},
+										{
+											"key": "startTime",
+											"value": "{{startTime}}"
+										},
+										{
+											"key": "durationMillis",
+											"value": "1000"
+										},
+										{
+											"key": "date",
+											"value": "{{currentDate}}"
+										},
+										{
+											"key": "distance",
+											"value": "1000"
+										}
+									]
+								},
+								"description": "The Log Activity endpoint creates log entry for an activity or user's private custom activity using units in the unit system which corresponds to the Accept-Language header provided (or using optional custom distanceUnit) and get a response in the format requested."
+							},
+							"response": []
+						},
+						{
+							"name": "12 Delete Activity Log",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/{{activity-log-id}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"{{activity-log-id}}.json"
+									]
+								},
+								"description": "Deletes a user's activity log entry with the given ID."
+							},
+							"response": []
+						},
+						{
+							"name": "13 Delete Favorite Activity",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/favorite/90009.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"favorite",
+										"90009.json"
+									]
+								},
+								"description": "Removes the activity with the given ID from a user's list of favorite activities."
+							},
+							"response": []
+						},
+						{
+							"name": "14 Add Favorite Activity",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/favorite/90009.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"favorite",
+										"90009.json"
+									]
+								},
+								"description": "Adds the activity with the given ID to user's list of favorite activities."
+							},
+							"response": []
+						},
+						{
+							"name": "15 <> Update Activity Goals",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/activities/goals/daily.json?type=Walking&value=5",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"activities",
+										"goals",
+										"daily.json"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "Walking"
+										},
+										{
+											"key": "value",
+											"value": "5"
+										}
+									]
+								},
+								"description": "Updates a user's daily or weekly activity goals and returns a response using units in the unit system which corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						}
+					],
+					"description": "The Activity endpoints are used to query and/or modify a Fitbit user's daily activity data."
+				}
+			],
+			"description": "The Activity endpoints are used to query and/or modify a Fitbit user's daily activity data."
+		},
+		{
+			"name": "13 Nutrition",
+			"item": [
+				{
+					"name": "01 Time Series",
+					"item": [
+						{
+							"name": "01 Get Food or Water Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/foods/log/{{n-resource-path}}/date/{{startDate}}/{{endDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"foods",
+										"log",
+										"{{n-resource-path}}",
+										"date",
+										"{{startDate}}",
+										"{{endDate}}.json"
+									]
+								},
+								"description": "Updates a user's daily activity goals and returns a response using units in the unit system which corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get Food or Water Time Series",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/foods/log/{{n-resource-path}}/date/{{currentDate}}/{{period}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"foods",
+										"log",
+										"{{n-resource-path}}",
+										"date",
+										"{{currentDate}}",
+										"{{period}}.json"
+									]
+								},
+								"description": "Updates a user's daily activity goals and returns a response using units in the unit system which corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						}
+					],
+					"description": "The Nutrition Time Series endpoints are used for querying food- and water-related data over a period of time either by specifying a date and time period, or a date range."
+				},
+				{
+					"name": "02 Nutrition",
+					"item": [
+						{
+							"name": "01 Get Food Locales",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/foods/locales.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"foods",
+										"locales.json"
+									]
+								},
+								"description": "Returns the food locales that the user may choose to search, log, and create food in."
+							},
+							"response": []
+						},
+						{
+							"name": "02 Get Food Goals",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/foods/log/goal.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"foods",
+										"log",
+										"goal.json"
+									]
+								},
+								"description": "Returns a user's current daily calorie consumption goal and/or foodPlan value in the format requested."
+							},
+							"response": []
+						},
+						{
+							"name": "03 Update Food Goal",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/foods/log/goal.json?calories={{calories}}&personalized={{n-boolean}}",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"foods",
+										"log",
+										"goal.json"
+									],
+									"query": [
+										{
+											"key": "calories",
+											"value": "{{calories}}"
+										},
+										{
+											"key": "intensity",
+											"value": "{{intensity}}",
+											"disabled": true
+										},
+										{
+											"key": "personalized",
+											"value": "{{n-boolean}}"
+										}
+									]
+								},
+								"description": "Updates a user's daily calories consumption goal or food plan and returns a response in the format requested."
+							},
+							"response": []
+						},
+						{
+							"name": "04 Get Food Logs",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/foods/log/date/{{currentDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"foods",
+										"log",
+										"date",
+										"{{currentDate}}.json"
+									]
+								},
+								"description": "Retreives a summary and list of a user's food log entries for a given day in the format requested."
+							},
+							"response": []
+						},
+						{
+							"name": "05 Get Water Logs",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/foods/log/water/date/{{currentDate}}.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"foods",
+										"log",
+										"water",
+										"date",
+										"{{currentDate}}.json"
+									]
+								},
+								"description": "Retreives a summary and list of a user's water log entries for a given day in the requested using units in the unit system that corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						},
+						{
+							"name": "06 Get Water Goal",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/foods/log/water/goal.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"foods",
+										"log",
+										"water",
+										"goal.json"
+									]
+								},
+								"description": "Retreives a summary and list of a user's water goal entries for a given day in the requested using units in the unit system that corresponds to the Accept-Language header provided."
+							},
+							"response": []
+						},
+						{
+							"name": "07 Get Favorite Foods",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/foods/log/favorite.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"foods",
+										"log",
+										"favorite.json"
+									]
+								},
+								"description": "Returns a list of a user's favorite foods in the format requested. A favorite food in the list provides a quick way to log the food via the Log Food endpoint."
+							},
+							"response": []
+						},
+						{
+							"name": "08 Get Frequent Foods",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/foods/log/frequent.jsonx",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"foods",
+										"log",
+										"frequent.jsonx"
+									]
+								},
+								"description": "Returns a list of a user's frequent foods in the format requested. A frequent food in the list provides a quick way to log the food via the Log Food endpoint."
+							},
+							"response": []
+						},
+						{
+							"name": "09 Get Meals",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/meals.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"meals.json"
+									]
+								},
+								"description": "Returns a list of meals created by user in the user's food log in the format requested. User creates and manages meals on the Food Log tab on the website."
+							},
+							"response": []
+						},
+						{
+							"name": "10 Get Recent Foods",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/user/-/foods/log/recent.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"user",
+										"-",
+										"foods",
+										"log",
+										"recent.json"
+									]
+								},
+								"description": "Returns a list of a user's frequent foods in the format requested. A frequent food in the list provides a quick way to log the food via the Log Food endpoint."
+							},
+							"response": []
+						},
+						{
+							"name": "11 Get Food",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/foods/1.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"foods",
+										"1.json"
+									]
+								},
+								"description": "Returns the details of a specific food in the Fitbit food databases or a private food that an authorized user has entered in the format requested."
+							},
+							"response": []
+						},
+						{
+							"name": "12 Get Food Units",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/foods/units.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"foods",
+										"units.json"
+									]
+								},
+								"description": "Returns a list of all valid Fitbit food units in the format requested."
+							},
+							"response": []
+						},
+						{
+							"name": "13 Search Foods",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{authTokeF}}"
+									}
+								],
+								"url": {
+									"raw": "https://api.fitbit.com/1/foods/search.json?query={{encodeed-food-id}}",
+									"protocol": "https",
+									"host": [
+										"api",
+										"fitbit",
+										"com"
+									],
+									"path": [
+										"1",
+										"foods",
+										"search.json"
+									],
+									"query": [
+										{
+											"key": "query",
+											"value": "{{encodeed-food-id}}"
+										}
+									]
+								},
+								"description": "Returns a list of public foods from the Fitbit food database and private food the user created in the format requested."
+							},
+							"response": []
+						}
+					],
+					"description": "The Nutrition endpoints are used for querying and modifying the food and water data."
+				}
+			],
+			"description": "The Nutrition endpoints are used for querying and modifying the food and water data."
+		},
+		{
+			"name": "14 Friends",
+			"item": [
+				{
+					"name": "01 Get Friends",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1.1/user/-/friends.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1.1",
+								"user",
+								"-",
+								"friends.json"
+							]
+						},
+						"description": "Returns data of a user's friends in the format requested using units in the unit system which corresponds to the Accept-Language header provided."
+					},
+					"response": []
+				},
+				{
+					"name": "02 Get Friends Leaderboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1.1/user/-/leaderboard/friends.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1.1",
+								"user",
+								"-",
+								"leaderboard",
+								"friends.json"
+							]
+						},
+						"description": "Returns data of a user's friends in the format requested using units in the unit system which corresponds to the Accept-Language header provided."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "15 Devices",
+			"item": [
+				{
+					"name": "01 Get Devices",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if(jsonData && jsonData.id){",
+									"    pm.environment.set(\"tracker-id\", jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1/user/-/devices.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1",
+								"user",
+								"-",
+								"devices.json"
+							]
+						},
+						"description": "Returns a list of the Fitbit devices connected to a user's account."
+					},
+					"response": []
+				},
+				{
+					"name": "02 Get Alarms",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1/user/-/devices/tracker/{{tracker-id}}/alarms.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1",
+								"user",
+								"-",
+								"devices",
+								"tracker",
+								"{{tracker-id}}",
+								"alarms.json"
+							]
+						},
+						"description": "Returns alarms for a device"
+					},
+					"response": []
+				},
+				{
+					"name": "03 Add Alarm",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1/user/-/devices/tracker/{{tracker-id}}/alarms.json?time=07%3A15-08%3A00&enabled=false&recurring=true&weekDays=MONDAY",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1",
+								"user",
+								"-",
+								"devices",
+								"tracker",
+								"{{tracker-id}}",
+								"alarms.json"
+							],
+							"query": [
+								{
+									"key": "time",
+									"value": "07%3A15-08%3A00"
+								},
+								{
+									"key": "enabled",
+									"value": "false"
+								},
+								{
+									"key": "recurring",
+									"value": "true"
+								},
+								{
+									"key": "weekDays",
+									"value": "MONDAY"
+								}
+							]
+						},
+						"description": "Adds the alarm settings to a given ID for a given device."
+					},
+					"response": []
+				},
+				{
+					"name": "04 Update Alarm",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1/user/-/devices/tracker/{{tracker-id}}/alarms/1.json?time=07%3A15-08%3A00&enabled=false&recurring=true&weekDays=MONDAY&snoozeLength=10&snoozeCount=1",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1",
+								"user",
+								"-",
+								"devices",
+								"tracker",
+								"{{tracker-id}}",
+								"alarms",
+								"1.json"
+							],
+							"query": [
+								{
+									"key": "time",
+									"value": "07%3A15-08%3A00"
+								},
+								{
+									"key": "enabled",
+									"value": "false"
+								},
+								{
+									"key": "recurring",
+									"value": "true"
+								},
+								{
+									"key": "weekDays",
+									"value": "MONDAY"
+								},
+								{
+									"key": "snoozeLength",
+									"value": "10"
+								},
+								{
+									"key": "snoozeCount",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Updates the alarm entry with a given ID for a given device. It also gets a response in the format requested."
+					},
+					"response": []
+				},
+				{
+					"name": "05 Delete Alarm",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer {{authTokeF}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.fitbit.com/1/user/-/devices/tracker/{{tracker-id}}/alarms/1.json",
+							"protocol": "https",
+							"host": [
+								"api",
+								"fitbit",
+								"com"
+							],
+							"path": [
+								"1",
+								"user",
+								"-",
+								"devices",
+								"tracker",
+								"{{tracker-id}}",
+								"alarms",
+								"1.json"
+							]
+						},
+						"description": "Deletes the user's device alarm entry with the given ID for a given device."
+					},
+					"response": []
+				}
+			],
+			"description": "The Devices endpoints displays information about the devices paired to a user's account."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

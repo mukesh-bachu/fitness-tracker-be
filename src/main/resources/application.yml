@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://35.222.213.142:5432/fdDatabase
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+application:
+  security:
+    jwt:
+      secret-key: f1545ae99807bdd38427fe5e12aefb1c0b0292fbddd2aa0505c5d35d1eca934ea7126e870ffb1118472f4e0a2dac781e163104c6da44c2289f82aa86884854a8
+      expiration: 86400000 # a day
+    clientId: 23RNF6
+    clientSecret: 7fd23b5474999f7e3eac1abfac59f750
+
+
+fitbit:
+  clientId: 23RNF6
+  clientSecret: 7fd23b5474999f7e3eac1abfac59f750
+  redirectUri:  http://localhost:4200/mft/fitbit
+  CHARACTERS: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~
+  VERIFIER_LENGTH: 64
+  scope: activity%20heartrate%20location%20nutrition%20oxygen_saturation%20profile%20respiratory_rate%20settings%20sleep%20social%20temperature%20weight
+
+
+
+google-fit:
+  clientId: 1076253086273-rripjtqh0f2i47c4mjendgdm5jolpl5k.apps.googleusercontent.com
+  clientSecret: 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
+  redirectUri:  http://localhost:4200/mft/google-fit
+  CHARACTERS: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~
+  VERIFIER_LENGTH: 64
+  scope: https://www.googleapis.com/auth/fitness.sleep.write%20https://www.googleapis.com/auth/fitness.sleep.read%20https://www.googleapis.com/auth/fitness.heart_rate.write%20https://www.googleapis.com/auth/fitness.heart_rate.read%20https://www.googleapis.com/auth/fitness.reproductive_health.write%20https://www.googleapis.com/auth/fitness.reproductive_health.read%20https://www.googleapis.com/auth/fitness.body_temperature.write%20https://www.googleapis.com/auth/fitness.body_temperature.read%20https://www.googleapis.com/auth/fitness.oxygen_saturation.write%20https://www.googleapis.com/auth/fitness.oxygen_saturation.read%20https://www.googleapis.com/auth/fitness.blood_glucose.write%20https://www.googleapis.com/auth/fitness.blood_glucose.read%20https://www.googleapis.com/auth/fitness.blood_pressure.write%20https://www.googleapis.com/auth/fitness.blood_pressure.read%20https://www.googleapis.com/auth/fitness.nutrition.write%20https://www.googleapis.com/auth/fitness.nutrition.read%20https://www.googleapis.com/auth/fitness.body.write%20https://www.googleapis.com/auth/fitness.body.read%20https://www.googleapis.com/auth/fitness.location.write%20https://www.googleapis.com/auth/fitness.location.read%20https://www.googleapis.com/auth/fitness.activity.write%20https://www.googleapis.com/auth/fitness.activity.read
+
+miracle:
+  login: https://dev-hubble-api.miraclesoft.com/hubble-v2/employee/login
+  search: https://dev-hubble-api.miraclesoft.com/hubble-v2/employee/suggestion-list?searchKey=
+  encryptKey: 123456$#@$^@1ERF

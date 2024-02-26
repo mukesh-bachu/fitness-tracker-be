@@ -1,0 +1,280 @@
+{
+	"info": {
+		"_postman_id": "f7ad2f25-bc42-42a8-ba10-0d32e792e562",
+		"name": "04 Miracle APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24527826"
+	},
+	"item": [
+		{
+			"name": "01 Miracle Employee Login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"if(jsonData && jsonData.token){",
+							"pm.environment.set(\"miracleJWT\", jsonData.token);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"loginId\": \"M87f31kvsB7WvHeAlAN3YA==\",\n \"password\": \"78YSpu2IbX9Rs0Ved9YlQQ==\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dev-hubble-api.miraclesoft.com/hubble-v2/employee/login",
+					"protocol": "https",
+					"host": [
+						"dev-hubble-api",
+						"miraclesoft",
+						"com"
+					],
+					"path": [
+						"hubble-v2",
+						"employee",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02 Get Miracle Employees ids",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{miracleJWT}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dev-hubble-api.miraclesoft.com/hubble-v2/employee/suggestion-list?searchKey=Santhos",
+					"protocol": "https",
+					"host": [
+						"dev-hubble-api",
+						"miraclesoft",
+						"com"
+					],
+					"path": [
+						"hubble-v2",
+						"employee",
+						"suggestion-list"
+					],
+					"query": [
+						{
+							"key": "searchKey",
+							"value": "Santhos"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03 Get Employees",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/search?query=sko",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"search"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "sko"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04 Miracle backend login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"if(jsonData && jsonData.token){",
+							"pm.environment.set(\"authToken\", jsonData.token);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"loginId\": \"M87f31kvsB7WvHeAlAN3YA==\",\n \"password\": \"78YSpu2IbX9Rs0Ved9YlQQ==\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/v1/auth/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05 Post a follow",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/skorada2@miraclesoft.com/follow/skola2@miraclesoft.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"skorada2@miraclesoft.com",
+						"follow",
+						"skola2@miraclesoft.com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05 Get Followers",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/skola2@miraclesoft.com/followers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"skola2@miraclesoft.com",
+						"followers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06 Get top7",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/users/top7",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"top7"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

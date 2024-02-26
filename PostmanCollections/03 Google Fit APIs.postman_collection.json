@@ -1,0 +1,277 @@
+{
+	"info": {
+		"_postman_id": "35b8fc84-f7ac-45d3-aa53-2258b5979a59",
+		"name": "03 Google Fit APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24527826"
+	},
+	"item": [
+		{
+			"name": "01 Get Auth Url",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/initiate-google-fit-oauth",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"initiate-google-fit-oauth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02 Get Auth Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"if (jsonData && jsonData.access_token) {",
+							"    pm.environment.set(\"googleAuthToken\", jsonData.access_token);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/google-fit?state=4scgsSSdqbTKcGSR&code=4%2F0AeaYSHC6j8agHVxpWys9XkzptRXWtc6c0IoOKQVcz1fcpitvK-tQvXGgnoMI_ELNLE86Dg&scope=https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.sleep.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.sleep.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.heart_rate.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.heart_rate.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.reproductive_health.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.reproductive_health.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.location.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.location.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"google-fit"
+					],
+					"query": [
+						{
+							"key": "state",
+							"value": "4scgsSSdqbTKcGSR"
+						},
+						{
+							"key": "code",
+							"value": "4%2F0AeaYSHC6j8agHVxpWys9XkzptRXWtc6c0IoOKQVcz1fcpitvK-tQvXGgnoMI_ELNLE86Dg"
+						},
+						{
+							"key": "scope",
+							"value": "https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.sleep.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.sleep.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.heart_rate.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.heart_rate.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.reproductive_health.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.reproductive_health.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.location.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.location.read%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.write%20https:%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03 Get Steps Data",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{googleAuthToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"aggregateBy\": [{\n    \"dataTypeName\": \"com.google.step_count.delta\",\n    \"dataSourceId\": \"derived:com.google.step_count.delta:com.google.android.gms:estimated_steps\"\n  }],\n  \"bucketByTime\": { \"durationMillis\": 86400000 },\n  \"startTimeMillis\": 1706572800000,\n  \"endTimeMillis\": 1706659199000\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"fitness",
+						"v1",
+						"users",
+						"me",
+						"dataset:aggregate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04 Get Calorie Data",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{googleAuthToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"aggregateBy\": [{\n    \"dataTypeName\": \"com.google.calories.expended\"\n  }],\n  \"bucketByTime\": { \"durationMillis\": 86400000 },\n  \"startTimeMillis\": 1706572800000,\n  \"endTimeMillis\": 1706659199000\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"fitness",
+						"v1",
+						"users",
+						"me",
+						"dataset:aggregate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05 Get Height",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{googleAuthToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://www.googleapis.com/fitness/v1/users/me/dataSources/raw:com.google.height:com.google.android.apps.fitness:user_input/datasets/1672444800000000000-1672531199999999999",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"fitness",
+						"v1",
+						"users",
+						"me",
+						"dataSources",
+						"raw:com.google.height:com.google.android.apps.fitness:user_input",
+						"datasets",
+						"1672444800000000000-1672531199999999999"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06 Get Data Sources",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{googleAuthToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.googleapis.com/fitness/v1/users/me/dataSources",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"fitness",
+						"v1",
+						"users",
+						"me",
+						"dataSources"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
